@@ -34,14 +34,22 @@ describe VaDatasetGenerator do
 
   context "Fetching VA details", :vcr do
     before(:each) do
-      @va = VaDatasetGenerator.new(150)
+      @va = VaDatasetGenerator.new(50)
     end
-    #it "should find headers" do
-      #allow(@va).to receive(:gather_ids)
-      #foo = @va.gather_ids
-      #expect(@va).to have_received(:gather_ids)
-      #binding.pry
-    #end
+    it "should find headers" do
+      @va.gather_data
+      reference = [
+        "Condo Name (ID)",
+        "Address",
+        "Status",
+        "Last Update",
+        "Request Received Date",
+        "Review Completion Date",
+        "id"
+      ]
+      expect(@va.headers.sort).to eql reference.sort
+    end
+
     it "should be able to fetch a single detail" do
       actual = @va.get_detail('529550')
       reference = {
@@ -58,5 +66,12 @@ describe VaDatasetGenerator do
       end
       expect(actual.keys.sort).to eql reference.keys.sort
     end
+
+    it 'should print a csv' do
+      @va.gather_data
+      csv_string = @va.to_csv
+      expect(CSV.parse(csv_string).length).to eql 10
+    end
+
   end
 end

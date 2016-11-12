@@ -3,6 +3,7 @@ require 'gross_strings'
 require "va_dataset_generator/version"
 require 'uri'
 require 'mechanize'
+require 'csv'
 require 'pry'
 
 class VaDatasetGenerator
@@ -66,6 +67,16 @@ class VaDatasetGenerator
       tr.children.map {|n| n.text.gsub(/\t|\n/, '').strip}.reject {|t| t == ""}
     end
     pairs.to_h.merge({"id" => id})
+  end
+
+  def to_csv
+    csv_string = CSV.generate do |csv|
+      csv << headers
+      @data.each do |detail|
+        csv << headers.map {|header| detail[header]}
+      end
+    end
+    return csv_string
   end
 
 
