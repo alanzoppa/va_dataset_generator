@@ -7,7 +7,7 @@ require 'csv'
 require 'pry'
 
 class VaDatasetGenerator
-  attr_accessor :uri, :agent, :detail_ids, :data
+  attr_accessor :uri, :agent, :detail_ids, :data, :page
 
   PATTERN = /javascript:void\(setSingleValue\('(.*)'\)\);/
 
@@ -34,9 +34,10 @@ class VaDatasetGenerator
       @page.links.each_with_index do |link, index|
         break if !@limit.nil? && index > @limit
         if VaDatasetGenerator.is_detail_page?(link)
-          @detail_ids << VaDatasetGenerator.detail_value(
-            link.attributes["href"]
-          )
+          @detail_ids << [
+              VaDatasetGenerator.detail_value(link.attributes["href"]),
+              link.node.parent.parent.children[-4].text.strip
+          ]
         end
       end
     end
@@ -53,16 +54,16 @@ class VaDatasetGenerator
   end
 
   def gather_data
-    @data = gather_ids.map {|id| get_detail(id) }
+    @data = gather_ids.map {|link_id, id| get_detail(link_id, id) }
     @data
   end
 
-  def get_detail(id)
+  def get_detail(link_id, id)
      #puts "detail for #{id}"
     # honestly what is this fucked http param with a bunch of other params
     # embedded in it
 
-    uri = GrossStrings.detail_uri(id)
+    uri = GrossStrings.detail_uri(link_id)
     pairs = @agent.get(uri).search('table.inputpanelfields tr').map do |tr|
       tr.children.map {|n| n.text.gsub(/\t|\n/, '').strip}.reject {|t| t == ""}
     end

@@ -50,10 +50,14 @@ describe VaDatasetGenerator do
       expect(@va.headers.sort).to eql reference.sort
     end
 
+    #it "should gather ids" do
+      #binding.pry
+    #end
+
     it "should be able to fetch a single detail" do
-      actual = @va.get_detail('529550')
+      actual = @va.get_detail('529550', '000001')
       reference = {
-          "id"=>"529550",
+          "id"=>"000001",
           "Condo Name (ID)"=>"1000 WEST WASHINGTON LOFTS (002357)",
           "Address"=>"1000 W WASHINGTON BLVDCHICAGO IL 60607 COOK ",
           "Status"=>"Accepted Without Conditions",
