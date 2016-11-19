@@ -67,7 +67,12 @@ class VaDatasetGenerator
     pairs = @agent.get(uri).search('table.inputpanelfields tr').map do |tr|
       tr.children.map {|n| n.text.gsub(/\t|\n/, '').strip}.reject {|t| t == ""}
     end
-    pairs.to_h.merge({"id" => id})
+    pairs.to_h.merge(
+      {
+        "id" => id,
+        "detail_uri" => GrossStrings.detail_uri(link_id)
+      }
+    )
   end
 
   def to_csv

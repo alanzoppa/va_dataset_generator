@@ -45,7 +45,8 @@ describe VaDatasetGenerator do
         "Last Update",
         "Request Received Date",
         "Review Completion Date",
-        "id"
+        "id",
+        "detail_uri"
       ]
       expect(@va.headers.sort).to eql reference.sort
     end
@@ -58,6 +59,7 @@ describe VaDatasetGenerator do
       actual = @va.get_detail('529550', '000001')
       reference = {
           "id"=>"000001",
+          "detail_uri" => GrossStrings.detail_uri('529550'),
           "Condo Name (ID)"=>"1000 WEST WASHINGTON LOFTS (002357)",
           "Address"=>"1000 W WASHINGTON BLVDCHICAGO IL 60607 COOK ",
           "Status"=>"Accepted Without Conditions",
